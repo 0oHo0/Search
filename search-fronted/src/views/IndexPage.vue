@@ -1,6 +1,6 @@
 <template>
   <div class="index-page">
-    <a-input-search v-model:value="searchParams.text" placeholder="input search text" enter-button="Search" size="large"
+    <a-input-search v-model:value="searchtext" placeholder="input search text" enter-button="Search" size="large"
       @search="onSearch" />
     <MyDivider />
     <a-tabs v-model:activeKey="activeKey" @change="onTabeChange">
@@ -27,28 +27,35 @@ import { useRouter, useRoute } from "vue-router";
 import myAxios from "@/plugins/myAxios";
 
 const initsearchParams = {
+  type:'',
   text: '',
   pageSize: 10,
   currnt: 1,
 }
+const route = useRoute();
 const searchParams = ref(initsearchParams);
 const userList = ref();
 const postList = ref();
 const pictureList = ref();
+const searchtext = ref(route.query.text);
 
-const loadData = (params : any) => {
+const loadData = (params: any) => {
   const Params = {
     ...params,
     searchText: params.text,
+    type: params.type,
   };
   myAxios.post("search/all", Params).then((res: any) => {
-    postList.value = res.postList;
-    userList.value = res.userList;
-    pictureList.value = res.pictureList;
+    if (Params.type == "post") {
+      postList.value = res.postList;
+    } else if (Params.type == "user") {
+      userList.value = res.userList;
+    } else if (Params.type == "picture") {
+      pictureList.value = res.pictureList;
+    }
   });
 }
 
-const route = useRoute();
 const activeKey = route.params.category;
 const router = useRouter();
 
@@ -56,24 +63,28 @@ watchEffect(() => {
   searchParams.value = {
     ...initsearchParams,
     text: route.query.text as string,
+    type: route.params.category as string, 
   };
+  loadData(searchParams.value);
 });
 
 const onSearch = (value: string) => {
   router.push({
-    query: searchParams.value,
-  });
-  loadData(searchParams.value);
+    query: {
+      ...searchParams.value,
+      text : searchtext.value,
+    }
+   
+  }); 
 };
-
 
 const onTabeChange = (key: string) => {
   router.push({
     path: `/${key}`,
-    query: searchParams.value,
+    query: {
+      ...searchParams.value,
+      type : key,
+    }
   });
 };
-
-loadData(searchParams);
-
 </script>
