@@ -11,6 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
@@ -21,7 +22,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  **/
 // todo 取消注释开启 ES（须先配置 ES）
-//@Document(indexName = "post")
+@Document(indexName = "post_v1")
 @Data
 public class PostEsDTO implements Serializable {
 
@@ -67,13 +68,13 @@ public class PostEsDTO implements Serializable {
      * 创建时间
      */
     @Field(index = false, store = true, type = FieldType.Date, format = {}, pattern = DATE_TIME_PATTERN)
-    private Date createTime;
+    private Date createtime;
 
     /**
      * 更新时间
      */
     @Field(index = false, store = true, type = FieldType.Date, format = {}, pattern = DATE_TIME_PATTERN)
-    private Date updateTime;
+    private Date updatetime;
 
     /**
      * 是否删除

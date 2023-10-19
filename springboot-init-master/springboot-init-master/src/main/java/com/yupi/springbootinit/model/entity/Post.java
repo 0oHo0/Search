@@ -7,7 +7,11 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 帖子
@@ -17,6 +21,8 @@ import lombok.Data;
  */
 @TableName(value = "post")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Post implements Serializable {
 
     /**
@@ -58,11 +64,13 @@ public class Post implements Serializable {
     /**
      * 创建时间
      */
+    @JsonIgnore
     private Date createTime;
 
     /**
      * 更新时间
      */
+    @JsonIgnore
     private Date updateTime;
 
     /**

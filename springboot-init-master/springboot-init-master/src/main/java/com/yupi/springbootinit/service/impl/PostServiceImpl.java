@@ -319,6 +319,37 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
                 this.getQueryWrapper(postQueryRequest));
         return this.getPostVOPage(postPage,request);
     }
+
+    @Override
+    public Page<PostVO> getByEs(PostQueryRequest postQueryRequest) {
+        String searchText = postQueryRequest.getSearchText();
+        long current = postQueryRequest.getCurrent()-1;
+        long pageSize = postQueryRequest.getPageSize();
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+        boolQueryBuilder.filter(QueryBuilders.termQuery("isDelete",0));
+        boolQueryBuilder.mustNot(QueryBuilders.matchQuery("title",""));
+        boolQueryBuilder.should(QueryBuilders.matchQuery("title",searchText));
+        boolQueryBuilder.should(QueryBuilders.matchQuery("content",searchText));
+        boolQueryBuilder.minimumShouldMatch(1);
+        PageRequest pageRequest = PageRequest.of((int) current, (int) pageSize);
+        // 构造查询
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
+                .withPageable(pageRequest).build();
+        SearchHits<PostEsDTO> searchHits = elasticsearchRestTemplate.search(searchQuery, PostEsDTO.class);
+        Page<PostVO> page = new Page<>();
+        page.setTotal(searchHits.getTotalHits());
+        List<Post> postList=null;
+        // 查出结果后，从 db 获取最新动态数据（比如点赞数）
+        if (searchHits.hasSearchHits()) {
+            List<SearchHit<PostEsDTO>> searchHitList = searchHits.getSearchHits();
+            List<Long> postIdList = searchHitList.stream().map(searchHit -> searchHit.getContent().getId())
+                    .collect(Collectors.toList());
+            postList = baseMapper.selectBatchIds(postIdList);
+        }
+        List<PostVO> postVOList = postList.stream().map(post -> PostVO.objToVo(post)).collect(Collectors.toList());
+        page.setRecords(postVOList);
+        return page;
+    }
 }
 
 

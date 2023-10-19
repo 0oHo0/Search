@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 
 /**
@@ -16,10 +17,11 @@ import org.springframework.beans.BeanUtils;
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @Data
+@NoArgsConstructor
 public class PostVO implements Serializable {
 
     private final static Gson GSON = new Gson();
-
+    private static final long serialVersionUID = -7254888630210798460L;
     /**
      * id
      */
@@ -114,5 +116,101 @@ public class PostVO implements Serializable {
         postVO.setTagList(GSON.fromJson(post.getTags(), new TypeToken<List<String>>() {
         }.getType()));
         return postVO;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Integer getThumbNum() {
+        return thumbNum;
+    }
+
+    public void setThumbNum(Integer thumbNum) {
+        this.thumbNum = thumbNum;
+    }
+
+    public Integer getFavourNum() {
+        return favourNum;
+    }
+
+    public void setFavourNum(Integer favourNum) {
+        this.favourNum = favourNum;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public List<String> getTagList() {
+        return tagList;
+    }
+
+    public void setTagList(List<String> tagList) {
+        this.tagList = tagList;
+    }
+
+    public UserVO getUser() {
+        return user;
+    }
+
+    public void setUser(UserVO user) {
+        this.user = user;
+    }
+
+    public Boolean getHasThumb() {
+        return hasThumb;
+    }
+
+    public void setHasThumb(Boolean hasThumb) {
+        this.hasThumb = hasThumb;
+    }
+
+    public Boolean getHasFavour() {
+        return hasFavour;
+    }
+
+    public void setHasFavour(Boolean hasFavour) {
+        this.hasFavour = hasFavour;
     }
 }

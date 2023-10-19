@@ -47,11 +47,11 @@ const loadData = (params: any) => {
   };
   myAxios.post("search/all", Params).then((res: any) => {
     if (Params.type == "post") {
-      postList.value = res.postList;
+      postList.value = res.dataList;
     } else if (Params.type == "user") {
-      userList.value = res.userList;
+      userList.value = res.dataList;
     } else if (Params.type == "picture") {
-      pictureList.value = res.pictureList;
+      pictureList.value = res.dataList;
     }
   });
 }
